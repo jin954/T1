@@ -79,13 +79,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function setPomodoroSettings() {
-        pomodoroMinutes = pomodoroMinutesInput.value;
-        shortBreakMinutes = shortBreakMinutesInput.value;
-        longBreakMinutes = longBreakMinutesInput.value;
+        pomodoroMinutes = parseInt(pomodoroMinutesInput.value);
+        shortBreakMinutes = parseInt(shortBreakMinutesInput.value);
+        longBreakMinutes = parseInt(longBreakMinutesInput.value);
         const backgroundColor = backgroundColorSelect.value;
         const timeFormat = timeFormatSelect.value;
         const showSeconds = showSecondsCheckbox.checked;
 
+        // Save settings to localStorage
         localStorage.setItem('pomodoroMinutes', pomodoroMinutes);
         localStorage.setItem('shortBreakMinutes', shortBreakMinutes);
         localStorage.setItem('longBreakMinutes', longBreakMinutes);
@@ -93,16 +94,22 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem('timeFormat', timeFormat);
         localStorage.setItem('showSeconds', showSeconds);
 
+        // Update the timer display with new settings
         document.getElementById('timer').textContent = `${pomodoroMinutes}:00`;
+
+        // Update the background color
         document.body.style.backgroundColor = backgroundColor;
+
+        // Update styles based on background color
         updateStyles(backgroundColor);
+
         toggleSettings();
     }
 
     function loadSettings() {
-        pomodoroMinutes = localStorage.getItem('pomodoroMinutes') || 25;
-        shortBreakMinutes = localStorage.getItem('shortBreakMinutes') || 5;
-        longBreakMinutes = localStorage.getItem('longBreakMinutes') || 15;
+        pomodoroMinutes = parseInt(localStorage.getItem('pomodoroMinutes')) || 25;
+        shortBreakMinutes = parseInt(localStorage.getItem('shortBreakMinutes')) || 5;
+        longBreakMinutes = parseInt(localStorage.getItem('longBreakMinutes')) || 15;
         const backgroundColor = localStorage.getItem('backgroundColor') || '#1a1a2e';
         const timeFormat = localStorage.getItem('timeFormat') || '24';
         const showSeconds = localStorage.getItem('showSeconds') === 'true';
@@ -114,16 +121,25 @@ document.addEventListener('DOMContentLoaded', function () {
         timeFormatSelect.value = timeFormat;
         showSecondsCheckbox.checked = showSeconds;
 
+        // Set the timer display to the loaded pomodoro time
         document.getElementById('timer').textContent = `${pomodoroMinutes}:00`;
+
+        // Set the background color
         document.body.style.backgroundColor = backgroundColor;
+
+        // Update styles based on background color
         updateStyles(backgroundColor);
+
+        // Start the clock
         updateClock();
         setInterval(updateClock, 1000);
     }
 
     function setMode(mode) {
+        // Remove active class from all buttons
         document.querySelectorAll('.buttons button').forEach(button => button.classList.remove('active'));
 
+        // Add active class to the clicked button
         if (mode === 'pomodoro') {
             pomodoroModeButton.classList.add('active');
             document.getElementById('timer').textContent = `${pomodoroMinutes}:00`;
@@ -135,6 +151,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('timer').textContent = `${longBreakMinutes}:00`;
         }
 
+        // Update styles based on background color
         updateStyles(document.body.style.backgroundColor);
     }
 
@@ -147,6 +164,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (remainingTime <= 0) {
             clearInterval(interval);
             timerRunning = false;
+            // ここにタイマー終了時の処理を追加することができます
         }
     }
 
@@ -172,39 +190,51 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         time += period;
-        clockDisplay.textContent = `${date} ${time}`;
+
+        clockDisplay.textContent = time;
+        document.getElementById('date').textContent = date;
     }
 
     function switchMode() {
         if (modePomodoroRadio.checked) {
-            clockDisplay.style.display = 'none';
-            pomodoroModeButton.style.display = 'block';
-            shortBreakModeButton.style.display = 'block';
-            longBreakModeButton.style.display = 'block';
-        } else {
-            clockDisplay.style.display = 'block';
-            pomodoroModeButton.style.display = 'none';
-            shortBreakModeButton.style.display = 'none';
-            longBreakModeButton.style.display = 'none';
+            document.getElementById('pomodoro').style.display = 'block';
+            document.getElementById('clock').style.display = 'none';
+        } else if (modeClockRadio.checked) {
+            document.getElementById('pomodoro').style.display = 'none';
+            document.getElementById('clock').style.display = 'block';
         }
     }
 
     function updateStyles(backgroundColor) {
-        const textColor = getTextColor(backgroundColor);
-        document.body.style.color = textColor;
+        const isDark = isDarkColor(backgroundColor);
+        const timer = document.getElementById('timer');
+        const time = document.getElementById('time');
+        const date = document.getElementById('date');
+
+        if (isDark) {
+            timer.classList.add('white-bg');
+            time.classList.add('white-bg');
+            date.classList.add('white-bg');
+        } else {
+            timer.classList.remove('white-bg');
+            time.classList.remove('white-bg');
+            date.classList.remove('white-bg');
+        }
     }
 
-    function getTextColor(bgColor) {
-        const rgb = hexToRgb(bgColor);
+    function isDarkColor(color) {
+        const rgb = hexToRgb(color);
+        if (!rgb) return false;
         const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
-        return brightness > 125 ? '#000' : '#fff';
+        return brightness < 128;
     }
 
     function hexToRgb(hex) {
-        const bigint = parseInt(hex.slice(1), 16);
-        const r = (bigint >> 16) & 255;
-        const g = (bigint >> 8) & 255;
-        const b = bigint & 255;
-        return { r, g, b };
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
     }
 });

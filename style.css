@@ -6,7 +6,7 @@ body {
     justify-content: center;
     height: 100vh;
     margin: 0;
-    background: #1a1a2e;
+    background: #6633FF;
     color: white;
 }
 
@@ -44,11 +44,12 @@ body {
     border-radius: 10px;
     background: white;
     color: #1a1a2e;
+    width: 200px;
 }
 
 #settings label {
     display: block;
-    margin: 10px 0;
+    margin: 5px 0;
 }
 
 #settings input, #settings select {

@@ -12,6 +12,7 @@ body {
 
 #clock {
     text-align: center;
+    position: relative;
 }
 
 #date, #time {
@@ -28,20 +29,16 @@ body {
 }
 
 #time {
-    font-size: 6em;
+    font-size: 4em;
     margin: 20px 0;
-}
-
-#date.white-bg, #time.white-bg {
-    color: black;
-    text-shadow: none;
+    position: relative;
 }
 
 #settings {
     position: fixed;
-    top: 50%;
+    top: calc(100% + 10px);
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
     z-index: 1;
     margin: 0 auto;
     width: 200px;
@@ -85,4 +82,11 @@ body {
     background: white;
     color: #1a1a2e;
     box-shadow: 0 0 2px 1px black;
+}
+
+.am-pm {
+    font-size: 1em;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
 }

@@ -13,6 +13,7 @@ body {
 
 #clock-container {
     text-align: center;
+    position: relative;
 }
 
 #time {
@@ -72,6 +73,7 @@ body {
 .am-pm {
     position: absolute;
     left: 0;
+    top: 0;
     font-size: 3em;
-    line-height: 3em;
+    line-height: 1;
 }

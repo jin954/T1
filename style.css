@@ -1,14 +1,12 @@
 body {
     font-family: Arial, sans-serif;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
     margin: 0;
     background: #6633FF;
     color: white;
-    position: relative;
 }
 
 #clock-container {
@@ -20,11 +18,14 @@ body {
     font-size: 6em;
     margin: 20px 0;
     position: relative;
+    display: flex;
+    align-items: center;
 }
 
 #date {
     font-size: 2em;
     margin-bottom: 10px;
+    text-shadow: 1px 1px 2px black;
 }
 
 #open-settings {
@@ -33,6 +34,7 @@ body {
     border: none;
     cursor: pointer;
     margin-top: 10px;
+    color: white;
 }
 
 #settings {
@@ -43,8 +45,10 @@ body {
     padding: 10px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    z-index: 1;
     width: 200px;
+    top: 0;
+    left: 0;
+    z-index: 1;
 }
 
 #settings label {
@@ -70,10 +74,16 @@ body {
     font-size: 1em;
 }
 
-.am-pm {
+#am-pm {
     position: absolute;
-    left: 0;
-    top: 0;
     font-size: 3em;
     line-height: 1;
+    left: -1.5em;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    width: 1em;
+    text-align: center;
 }

@@ -3,14 +3,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const resetButton = document.getElementById('reset-pomodoro');
     const settingsButton = document.getElementById('open-settings');
     const setPomodoroButton = document.getElementById('set-pomodoro');
-    const clockModeButton = document.getElementById('clock-mode');
     const pomodoroModeButton = document.getElementById('pomodoro-mode');
+    const shortBreakModeButton = document.getElementById('short-break-mode');
+    const longBreakModeButton = document.getElementById('long-break-mode');
     const pomodoroMinutesInput = document.getElementById('pomodoro-minutes');
     const shortBreakMinutesInput = document.getElementById('short-break-minutes');
     const longBreakMinutesInput = document.getElementById('long-break-minutes');
     const backgroundColorSelect = document.getElementById('background-color');
     const timeFormatSelect = document.getElementById('time-format');
     const showSecondsCheckbox = document.getElementById('show-seconds');
+    const modePomodoroRadio = document.getElementById('mode-pomodoro');
+    const modeClockRadio = document.getElementById('mode-clock');
 
     let interval;
     let timerRunning = false;
@@ -23,13 +26,16 @@ document.addEventListener('DOMContentLoaded', function () {
     resetButton.addEventListener('click', resetPomodoro);
     settingsButton.addEventListener('click', toggleSettings);
     setPomodoroButton.addEventListener('click', setPomodoroSettings);
-    clockModeButton.addEventListener('change', () => setMode('clock'));
-    pomodoroModeButton.addEventListener('change', () => setMode('pomodoro'));
+    pomodoroModeButton.addEventListener('click', () => setMode('pomodoro'));
+    shortBreakModeButton.addEventListener('click', () => setMode('short-break'));
+    longBreakModeButton.addEventListener('click', () => setMode('long-break'));
+    modePomodoroRadio.addEventListener('change', switchMode);
+    modeClockRadio.addEventListener('change', switchMode);
 
     function startPomodoro() {
         if (!timerRunning) {
             timerRunning = true;
-            const currentMode = document.querySelector('.mode-switch input:checked').id;
+            const currentMode = document.querySelector('.buttons button.active').id;
             let minutes;
 
             if (currentMode === 'pomodoro-mode') {
@@ -49,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
         clearInterval(interval);
         timerRunning = false;
         remainingTime = 0;
-        const currentMode = document.querySelector('.mode-switch input:checked').id;
+        const currentMode = document.querySelector('.buttons button.active').id;
         let minutes;
 
         if (currentMode === 'pomodoro-mode') {
@@ -120,26 +126,25 @@ document.addEventListener('DOMContentLoaded', function () {
         // Update styles based on background color
         updateStyles(backgroundColor);
 
-        // Initialize clock
+        // Start the clock
         updateClock();
         setInterval(updateClock, 1000);
     }
 
     function setMode(mode) {
         // Remove active class from all buttons
-        document.querySelectorAll('.mode-switch input').forEach(input => input.nextElementSibling.classList.remove('active'));
+        document.querySelectorAll('.buttons button').forEach(button => button.classList.remove('active'));
 
-        // Hide or show the timer and clock based on mode
-        if (mode === 'clock') {
-            document.getElementById('clock').style.display = 'block';
-            document.getElementById('timer').style.display = 'none';
-            document.getElementById('start-pomodoro').style.display = 'none';
-            document.getElementById('reset-pomodoro').style.display = 'none';
-        } else {
-            document.getElementById('clock').style.display = 'none';
-            document.getElementById('timer').style.display = 'block';
-            document.getElementById('start-pomodoro').style.display = 'inline-block';
-            document.getElementById('reset-pomodoro').style.display = 'inline-block';
+        // Add active class to the clicked button
+        if (mode === 'pomodoro') {
+            pomodoroModeButton.classList.add('active');
+            document.getElementById('timer').textContent = `${pomodoroMinutesInput.value}:00`;
+        } else if (mode === 'short-break') {
+            shortBreakModeButton.classList.add('active');
+            document.getElementById('timer').textContent = `${shortBreakMinutesInput.value}:00`;
+        } else if (mode === 'long-break') {
+            longBreakModeButton.classList.add('active');
+            document.getElementById('timer').textContent = `${longBreakMinutesInput.value}:00`;
         }
 
         // Update styles based on background color
@@ -155,43 +160,61 @@ document.addEventListener('DOMContentLoaded', function () {
         if (remainingTime <= 0) {
             clearInterval(interval);
             timerRunning = false;
-            // タイマー終了時の処理をここに追加できます
+            // ここにタイマー終了時の処理を追加することができます
         }
     }
 
     function updateClock() {
         const now = new Date();
-        const timeFormat = localStorage.getItem('timeFormat') || '24';
-        const showSeconds = localStorage.getItem('showSeconds') === 'true';
-        const date = now.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' });
+        const date = now.toLocaleDateString('ja-JP', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         let hours = now.getHours();
         let minutes = now.getMinutes();
         let seconds = now.getSeconds();
-        let ampm = '';
+        let period = '';
 
-        if (timeFormat === '12') {
-            ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12;
-            hours = hours ? hours : 12; // 0 should be 12
+        if (timeFormatSelect.value === '12') {
+            period = hours >= 12 ? ' PM' : ' AM';
+            hours = hours % 12 || 12;
         }
 
-        document.getElementById('date').textContent = date;
-        document.getElementById('time').textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}${showSeconds ? `:${seconds.toString().padStart(2, '0')}` : ''} ${ampm}`;
+        minutes = minutes.toString().padStart(2, '0');
+        seconds = seconds.toString().padStart(2, '0');
 
-        // Update styles based on background color
-        updateStyles(document.body.style.backgroundColor);
+        let time = `${hours}:${minutes}`;
+        if (showSecondsCheckbox.checked) {
+            time += `:${seconds}`;
+        }
+        time += period;
+
+        document.getElementById('date').textContent = date;
+        document.getElementById('time').textContent = time;
+    }
+
+    function switchMode() {
+        const pomodoroDisplay = document.getElementById('pomodoro');
+        const clockDisplay = document.getElementById('clock');
+        if (modePomodoroRadio.checked) {
+            document.getElementById('timer').style.display = 'block';
+            clockDisplay.style.display = 'none';
+        } else {
+            document.getElementById('timer').style.display = 'none';
+            clockDisplay.style.display = 'block';
+        }
     }
 
     function updateStyles(backgroundColor) {
+        const activeButton = document.querySelector('.buttons button.active');
         const timer = document.getElementById('timer');
-        const clock = document.getElementById('clock');
+        const time = document.getElementById('time');
 
         if (backgroundColor === '#FFFFFF') {
+            activeButton.classList.add('white-bg');
             timer.classList.add('white-bg');
-            clock.classList.add('white-bg');
+            time.classList.add('white-bg');
         } else {
+            document.querySelectorAll('.buttons button').forEach(button => button.classList.remove('white-bg'));
             timer.classList.remove('white-bg');
-            clock.classList.remove('white-bg');
+            time.classList.remove('white-bg');
         }
     }
 });

@@ -5,9 +5,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const setClockButton = document.getElementById('set-clock');
     const dateDisplay = document.getElementById('date');
     const timeDisplay = document.getElementById('time');
-    
+
     setClockButton.addEventListener('click', setClockSettings);
-    
+
     function setClockSettings() {
         const backgroundColor = backgroundColorSelect.value;
         document.body.style.backgroundColor = backgroundColor;
@@ -44,9 +44,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const isDark = isDarkColor(backgroundColor);
 
         if (isDark) {
-            timeDisplay.classList.add('white-bg');
-        } else {
+            dateDisplay.classList.remove('white-bg');
             timeDisplay.classList.remove('white-bg');
+        } else {
+            dateDisplay.classList.add('white-bg');
+            timeDisplay.classList.add('white-bg');
         }
     }
 

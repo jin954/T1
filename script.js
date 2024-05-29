@@ -17,8 +17,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function toggleSettings() {
         if (settingsDiv.style.display === 'none' || settingsDiv.style.display === '') {
             const buttonRect = openSettingsButton.getBoundingClientRect();
-            settingsDiv.style.top = `${buttonRect.bottom}px`;
-            settingsDiv.style.left = `${buttonRect.left}px`;
+            settingsDiv.style.top = `${buttonRect.bottom + window.scrollY}px`;
+            settingsDiv.style.left = `${buttonRect.left + window.scrollX}px`;
             settingsDiv.style.display = 'block';
         } else {
             settingsDiv.style.display = 'none';
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let period = '';
 
         if (timeFormatSelect.value === '12') {
-            period = hours >= 12 ? ' PM' : ' AM';
+            period = hours >= 12 ? 'PM' : 'AM';
             hours = hours % 12 || 12;
         }
 
@@ -65,33 +65,30 @@ document.addEventListener('DOMContentLoaded', function () {
             time += `:${seconds}`;
         }
 
-        timeDisplay.textContent = time;
+        timeDisplay.innerHTML = `<span class="am-pm">${period}</span>${time}`;
         dateDisplay.textContent = date;
 
-        const amPmDisplay = document.createElement('div');
-        amPmDisplay.textContent = period;
-        amPmDisplay.className = 'am-pm';
-        timeDisplay.appendChild(amPmDisplay);
-
-        // AM/PM のサイズと位置を調整
+        const amPmDisplay = document.querySelector('.am-pm');
         const amPmHeight = timeDisplay.clientHeight / 2;
-        amPmDisplay.style.position = 'absolute';
-        amPmDisplay.style.left = '0';
-        amPmDisplay.style.top = period === ' AM' ? `0` : `${amPmHeight}px`;
         amPmDisplay.style.height = `${amPmHeight}px`;
         amPmDisplay.style.lineHeight = `${amPmHeight}px`;
+        amPmDisplay.style.top = period === 'AM' ? `0` : `${amPmHeight}px`;
     }
 
     function formatDate(date) {
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const options = { weekday: 'short', year: 'numeric', month: '2-digit', day: '2-digit' };
         return date.toLocaleDateString('ja-JP', options);
     }
 
     function updateStyles(backgroundColor) {
         if (backgroundColor === '#FFFFFF') {
             document.body.style.color = 'black';
+            dateDisplay.classList.add('white-bg');
+            timeDisplay.classList.add('white-bg');
         } else {
             document.body.style.color = 'white';
+            dateDisplay.classList.remove('white-bg');
+            timeDisplay.classList.remove('white-bg');
         }
     }
 });

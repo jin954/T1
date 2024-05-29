@@ -73,11 +73,13 @@ document.addEventListener('DOMContentLoaded', function () {
         amPmDisplay.className = 'am-pm';
         timeDisplay.appendChild(amPmDisplay);
 
-        // AM/PM の位置を調整
+        // AM/PM のサイズと位置を調整
         const amPmHeight = timeDisplay.clientHeight / 2;
         amPmDisplay.style.position = 'absolute';
         amPmDisplay.style.left = '0';
         amPmDisplay.style.top = period === ' AM' ? `0` : `${amPmHeight}px`;
+        amPmDisplay.style.height = `${amPmHeight}px`;
+        amPmDisplay.style.lineHeight = `${amPmHeight}px`;
     }
 
     function formatDate(date) {

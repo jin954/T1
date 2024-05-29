@@ -21,15 +21,26 @@ document.addEventListener('DOMContentLoaded', function () {
             settingsDiv.style.left = `${clockRect.left}px`;
             settingsDiv.style.display = 'block';
         } else {
-            settingsDiv.style.display = 'none';
-        }
+            settingsDiv.style.display = 'none
+}
+
+        function setClockSettings() {
+        saveSettings();
+        loadSettings();
+        toggleSettings();
     }
 
-    function setClockSettings() {
-        const backgroundColor = backgroundColorSelect.value;
+    function loadSettings() {
+        const backgroundColor = localStorage.getItem('backgroundColor') || '#6633FF';
         document.body.style.backgroundColor = backgroundColor;
         updateStyles(backgroundColor);
-        saveSettings();
+        updateClock();
+        setInterval(updateClock, 1000);
+    }
+
+    function saveSettings() {
+        const backgroundColor = backgroundColorSelect.value;
+        localStorage.setItem('backgroundColor', backgroundColor);
     }
 
     function updateClock() {
@@ -52,61 +63,28 @@ document.addEventListener('DOMContentLoaded', function () {
         if (showSecondsCheckbox.checked) {
             time += `:${seconds}`;
         }
-        time += period;
 
-        dateDisplay.textContent = date;
         timeDisplay.textContent = time;
-    }
+        dateDisplay.textContent = date;
 
-    function formatDate(date) {
-        const year = date.getFullYear();
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const day = date.getDate().toString().padStart(2, '0');
-        const weekday = ['日', '月', '火', '水', '木', '金', '土'][date.getDay()];
-        return `${year}-${month}-${day}(${weekday})`;
-    }
-
-    function updateStyles(backgroundColor) {
-        const isDark = isDarkColor(backgroundColor);
-
-        if (isDark) {
-            dateDisplay.classList.remove('white-bg');
-            timeDisplay.classList.remove('white-bg');
-        } else {
-            dateDisplay.classList.add('white-bg');
-            timeDisplay.classList.add('white-bg');
+        if (timeFormatSelect.value === '12') {
+            const amPmDisplay = document.createElement('div');
+            amPmDisplay.textContent = period;
+            amPmDisplay.className = 'am-pm';
+            timeDisplay.appendChild(amPmDisplay);
         }
     }
 
-    function isDarkColor(color) {
-        const rgb = hexToRgb(color);
-        if (!rgb) return false;
-        const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
-        return brightness < 128;
+    function formatDate(date) {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        return date.toLocaleDateString('ja-JP', options);
     }
 
-    function hexToRgb(hex) {
-        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? {
-            r: parseInt(result[1], 16),
-            g: parseInt(result[2], 16),
-            b: parseInt(result[2], 16)
-        } : null;
+    function updateStyles(backgroundColor) {
+        if (backgroundColor === '#FFFFFF') {
+            document.body.style.color = 'black';
+        } else {
+            document.body.style.color = 'white';
+        }
     }
-
-    function loadSettings() {
-        const backgroundColor = localStorage.getItem('backgroundColor') || '#6633FF';
-        document.body.style.backgroundColor = backgroundColor;
-        updateStyles(backgroundColor);
-    }
-
-    function saveSettings() {
-        const backgroundColor = backgroundColorSelect.value;
-        localStorage.setItem('backgroundColor', backgroundColor);
-    }
-
-    // 初期化
-    updateClock();
-    setInterval(updateClock, 1000);
 });
-

@@ -38,13 +38,19 @@ body {
 }
 
 #settings {
-    margin-top: 10px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    margin: 0 auto;
+    width: 200px;
     padding: 10px;
     border: none;
     border-radius: 10px;
     background: white;
     color: #1a1a2e;
-    width: 200px;
+    display: none;
 }
 
 #settings label {

@@ -1,147 +1,17 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const startButton = document.getElementById('start-pomodoro');
-    const resetButton = document.getElementById('reset-pomodoro');
-    const settingsButton = document.getElementById('open-settings');
-    const setPomodoroButton = document.getElementById('set-pomodoro');
-    const pomodoroModeButton = document.getElementById('pomodoro-mode');
-    const shortBreakModeButton = document.getElementById('short-break-mode');
-    const longBreakModeButton = document.getElementById('long-break-mode');
-    const pomodoroMinutesInput = document.getElementById('pomodoro-minutes');
-    const shortBreakMinutesInput = document.getElementById('short-break-minutes');
-    const longBreakMinutesInput = document.getElementById('long-break-minutes');
-    const backgroundColorSelect = document.getElementById('background-color');
     const timeFormatSelect = document.getElementById('time-format');
     const showSecondsCheckbox = document.getElementById('show-seconds');
-    const modePomodoroRadio = document.getElementById('mode-pomodoro');
-    const modeClockRadio = document.getElementById('mode-clock');
+    const backgroundColorSelect = document.getElementById('background-color');
+    const setClockButton = document.getElementById('set-clock');
+    const dateDisplay = document.getElementById('date');
+    const timeDisplay = document.getElementById('time');
 
-    let interval;
-    let timerRunning = false;
-    let remainingTime = 0;
+    setClockButton.addEventListener('click', setClockSettings);
 
-    // Load settings from localStorage
-    loadSettings();
-
-    startButton.addEventListener('click', startPomodoro);
-    resetButton.addEventListener('click', resetPomodoro);
-    settingsButton.addEventListener('click', toggleSettings);
-    setPomodoroButton.addEventListener('click', saveSettings);
-    pomodoroModeButton.addEventListener('click', () => setMode('pomodoro'));
-    shortBreakModeButton.addEventListener('click', () => setMode('shortBreak'));
-    longBreakModeButton.addEventListener('click', () => setMode('longBreak'));
-    modePomodoroRadio.addEventListener('change', toggleMode);
-    modeClockRadio.addEventListener('change', toggleMode);
-
-    function loadSettings() {
-        const pomodoroMinutes = localStorage.getItem('pomodoroMinutes') || 25;
-        const shortBreakMinutes = localStorage.getItem('shortBreakMinutes') || 5;
-        const longBreakMinutes = localStorage.getItem('longBreakMinutes') || 15;
-        const backgroundColor = localStorage.getItem('backgroundColor') || '#6633FF';
-        const timeFormat = localStorage.getItem('timeFormat') || '24';
-        const showSeconds = localStorage.getItem('showSeconds') === 'true';
-
-        pomodoroMinutesInput.value = pomodoroMinutes;
-        shortBreakMinutesInput.value = shortBreakMinutes;
-        longBreakMinutesInput.value = longBreakMinutes;
-        backgroundColorSelect.value = backgroundColor;
-        timeFormatSelect.value = timeFormat;
-        showSecondsCheckbox.checked = showSeconds;
-
+    function setClockSettings() {
+        const backgroundColor = backgroundColorSelect.value;
         document.body.style.backgroundColor = backgroundColor;
-    }
-
-    function saveSettings() {
-        localStorage.setItem('pomodoroMinutes', pomodoroMinutesInput.value);
-        localStorage.setItem('shortBreakMinutes', shortBreakMinutesInput.value);
-        localStorage.setItem('longBreakMinutes', longBreakMinutesInput.value);
-        localStorage.setItem('backgroundColor', backgroundColorSelect.value);
-        localStorage.setItem('timeFormat', timeFormatSelect.value);
-        localStorage.setItem('showSeconds', showSecondsCheckbox.checked);
-
-        document.body.style.backgroundColor = backgroundColorSelect.value;
-        toggleSettings();
-    }
-
-    function toggleSettings() {
-        const settings = document.getElementById('settings');
-        settings.style.display = settings.style.display === 'none' ? 'block' : 'none';
-    }
-
-    function startPomodoro() {
-        if (timerRunning) {
-            clearInterval(interval);
-            timerRunning = false;
-            startButton.textContent = 'Start';
-        } else {
-            const mode = document.querySelector('.buttons button.active').id;
-            if (mode === 'pomodoro-mode') {
-                remainingTime = pomodoroMinutesInput.value * 60;
-            } else if (mode === 'short-break-mode') {
-                remainingTime = shortBreakMinutesInput.value * 60;
-            } else if (mode === 'long-break-mode') {
-                remainingTime = longBreakMinutesInput.value * 60;
-            }
-            interval = setInterval(updateTimer, 1000);
-            timerRunning = true;
-            startButton.textContent = 'Stop';
-        }
-    }
-
-    function resetPomodoro() {
-        clearInterval(interval);
-        timerRunning = false;
-        startButton.textContent = 'Start';
-        const mode = document.querySelector('.buttons button.active').id;
-        if (mode === 'pomodoro-mode') {
-            document.getElementById('timer').textContent = `${pomodoroMinutesInput.value}:00`;
-        } else if (mode === 'short-break-mode') {
-            document.getElementById('timer').textContent = `${shortBreakMinutesInput.value}:00`;
-        } else if (mode === 'long-break-mode') {
-            document.getElementById('timer').textContent = `${longBreakMinutesInput.value}:00`;
-        }
-    }
-
-    function updateTimer() {
-        remainingTime--;
-        if (remainingTime <= 0) {
-            clearInterval(interval);
-            timerRunning = false;
-            startButton.textContent = 'Start';
-            alert('Time is up!');
-        }
-        const minutes = Math.floor(remainingTime / 60);
-        const seconds = remainingTime % 60;
-        document.getElementById('timer').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-    }
-
-    function setMode(mode) {
-        document.querySelectorAll('.buttons button').forEach(button => {
-            button.classList.remove('active');
-        });
-        if (mode === 'pomodoro') {
-            pomodoroModeButton.classList.add('active');
-        } else if (mode === 'shortBreak') {
-            shortBreakModeButton.classList.add('active');
-        } else if (mode === 'longBreak') {
-            longBreakModeButton.classList.add('active');
-        }
-        resetPomodoro();
-    }
-
-    function toggleMode() {
-        const clock = document.getElementById('clock');
-        const timer = document.getElementById('timer');
-        if (modeClockRadio.checked) {
-            clock.style.display = 'block';
-            timer.style.display = 'none';
-            startButton.style.display = 'none';
-            resetButton.style.display = 'none';
-        } else {
-            clock.style.display = 'none';
-            timer.style.display = 'block';
-            startButton.style.display = 'inline-block';
-            resetButton.style.display = 'inline-block';
-        }
+        updateStyles(backgroundColor);
     }
 
     function updateClock() {
@@ -168,7 +38,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         time += period;
 
-        const backgroundColor = backgroundColorSelect.value;
+        dateDisplay.textContent = date;
+        timeDisplay.textContent = time;
+    }
+
+    function updateStyles(backgroundColor) {
         const isDark = isDarkColor(backgroundColor);
 
         if (isDark) {
@@ -178,9 +52,6 @@ document.addEventListener('DOMContentLoaded', function () {
             dateDisplay.classList.add('white-bg');
             timeDisplay.classList.add('white-bg');
         }
-
-        document.getElementById('date').textContent = date;
-        document.getElementById('time').textContent = time;
     }
 
     function isDarkColor(color) {

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer with Clock</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="pomodoro">
+        <div class="mode-switch">
+            <input type="radio" id="clock-mode" name="mode" checked>
+            <label for="clock-mode">時計</label>
+            <input type="radio" id="pomodoro-mode" name="mode">
+            <label for="pomodoro-mode">ポモドーロ</label>
+        </div>
+        <div id="clock">
+            <div id="date"></div>
+            <div id="time"></div>
+        </div>
+        <div id="timer" style="display: none;">25:00</div>
+        <div class="pomodoro-controls">
+            <button id="start-pomodoro" class="start-button" style="display: none;">Start</button>
+            <button id="reset-pomodoro" class="icon-button" style="display: none;">🔄</button>
+            <button id="open-settings" class="icon-button">⚙️</button>
+        </div>
+        <div id="settings" style="display: none;">
+            <label>Pomodoro: <input type="number" id="pomodoro-minutes" value="25" min="1" max="60"> 分</label>
+            <label>Short Break: <input type="number" id="short-break-minutes" value="5" min="1" max="30"> 分</label>
+            <label>Long Break: <input type="number" id="long-break-minutes" value="15" min="1" max="60"> 分</label>
+            <label>Background Color:
+                <select id="background-color">
+                    <option value="#6633FF">Purple</option>
+                    <option value="#FFFFFF">White</option>
+                    <option value="#000000">Black</option>
+                </select>
+            </label>
+            <label>Time Format:
+                <select id="time-format">
+                    <option value="24">24時間表記</option>
+                    <option value="12">AM/PM表記</option>
+                </select>
+            </label>
+            <label>Show Seconds:
+                <input type="checkbox" id="show-seconds" checked>
+            </label>
+            <button id="set-pomodoro">設定</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

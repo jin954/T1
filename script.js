@@ -14,12 +14,16 @@ document.addEventListener('DOMContentLoaded', function () {
     const showSecondsCheckbox = document.getElementById('show-seconds');
     const modePomodoroRadio = document.getElementById('mode-pomodoro');
     const modeClockRadio = document.getElementById('mode-clock');
+    const clockDisplay = document.getElementById('clock');
+    const settingsDisplay = document.getElementById('settings');
 
     let interval;
     let timerRunning = false;
     let remainingTime = 0;
+    let pomodoroMinutes = 25;
+    let shortBreakMinutes = 5;
+    let longBreakMinutes = 15;
 
-    // Load settings from localStorage
     loadSettings();
 
     startButton.addEventListener('click', startPomodoro);
@@ -39,11 +43,11 @@ document.addEventListener('DOMContentLoaded', function () {
             let minutes;
 
             if (currentMode === 'pomodoro-mode') {
-                minutes = parseInt(pomodoroMinutesInput.value);
+                minutes = pomodoroMinutes;
             } else if (currentMode === 'short-break-mode') {
-                minutes = parseInt(shortBreakMinutesInput.value);
+                minutes = shortBreakMinutes;
             } else if (currentMode === 'long-break-mode') {
-                minutes = parseInt(longBreakMinutesInput.value);
+                minutes = longBreakMinutes;
             }
 
             remainingTime = minutes * 60;
@@ -59,11 +63,11 @@ document.addEventListener('DOMContentLoaded', function () {
         let minutes;
 
         if (currentMode === 'pomodoro-mode') {
-            minutes = parseInt(pomodoroMinutesInput.value);
+            minutes = pomodoroMinutes;
         } else if (currentMode === 'short-break-mode') {
-            minutes = parseInt(shortBreakMinutesInput.value);
+            minutes = shortBreakMinutes;
         } else if (currentMode === 'long-break-mode') {
-            minutes = parseInt(longBreakMinutesInput.value);
+            minutes = longBreakMinutes;
         }
 
         document.getElementById('timer').textContent = `${minutes}:00`;
@@ -75,14 +79,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function setPomodoroSettings() {
-        const pomodoroMinutes = pomodoroMinutesInput.value;
-        const shortBreakMinutes = shortBreakMinutesInput.value;
-        const longBreakMinutes = longBreakMinutesInput.value;
+        pomodoroMinutes = pomodoroMinutesInput.value;
+        shortBreakMinutes = shortBreakMinutesInput.value;
+        longBreakMinutes = longBreakMinutesInput.value;
         const backgroundColor = backgroundColorSelect.value;
         const timeFormat = timeFormatSelect.value;
         const showSeconds = showSecondsCheckbox.checked;
 
-        // Save settings to localStorage
         localStorage.setItem('pomodoroMinutes', pomodoroMinutes);
         localStorage.setItem('shortBreakMinutes', shortBreakMinutes);
         localStorage.setItem('longBreakMinutes', longBreakMinutes);
@@ -90,22 +93,16 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem('timeFormat', timeFormat);
         localStorage.setItem('showSeconds', showSeconds);
 
-        // Update the timer display with new settings
         document.getElementById('timer').textContent = `${pomodoroMinutes}:00`;
-
-        // Update the background color
         document.body.style.backgroundColor = backgroundColor;
-
-        // Update styles based on background color
         updateStyles(backgroundColor);
-
         toggleSettings();
     }
 
     function loadSettings() {
-        const pomodoroMinutes = localStorage.getItem('pomodoroMinutes') || 25;
-        const shortBreakMinutes = localStorage.getItem('shortBreakMinutes') || 5;
-        const longBreakMinutes = localStorage.getItem('longBreakMinutes') || 15;
+        pomodoroMinutes = localStorage.getItem('pomodoroMinutes') || 25;
+        shortBreakMinutes = localStorage.getItem('shortBreakMinutes') || 5;
+        longBreakMinutes = localStorage.getItem('longBreakMinutes') || 15;
         const backgroundColor = localStorage.getItem('backgroundColor') || '#1a1a2e';
         const timeFormat = localStorage.getItem('timeFormat') || '24';
         const showSeconds = localStorage.getItem('showSeconds') === 'true';
@@ -117,37 +114,27 @@ document.addEventListener('DOMContentLoaded', function () {
         timeFormatSelect.value = timeFormat;
         showSecondsCheckbox.checked = showSeconds;
 
-        // Set the timer display to the loaded pomodoro time
         document.getElementById('timer').textContent = `${pomodoroMinutes}:00`;
-
-        // Set the background color
         document.body.style.backgroundColor = backgroundColor;
-
-        // Update styles based on background color
         updateStyles(backgroundColor);
-
-        // Start the clock
         updateClock();
         setInterval(updateClock, 1000);
     }
 
     function setMode(mode) {
-        // Remove active class from all buttons
         document.querySelectorAll('.buttons button').forEach(button => button.classList.remove('active'));
 
-        // Add active class to the clicked button
         if (mode === 'pomodoro') {
             pomodoroModeButton.classList.add('active');
-            document.getElementById('timer').textContent = `${pomodoroMinutesInput.value}:00`;
+            document.getElementById('timer').textContent = `${pomodoroMinutes}:00`;
         } else if (mode === 'short-break') {
             shortBreakModeButton.classList.add('active');
-            document.getElementById('timer').textContent = `${shortBreakMinutesInput.value}:00`;
+            document.getElementById('timer').textContent = `${shortBreakMinutes}:00`;
         } else if (mode === 'long-break') {
             longBreakModeButton.classList.add('active');
-            document.getElementById('timer').textContent = `${longBreakMinutesInput.value}:00`;
+            document.getElementById('timer').textContent = `${longBreakMinutes}:00`;
         }
 
-        // Update styles based on background color
         updateStyles(document.body.style.backgroundColor);
     }
 
@@ -160,7 +147,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (remainingTime <= 0) {
             clearInterval(interval);
             timerRunning = false;
-            // ここにタイマー終了時の処理を追加することができます
         }
     }
 
@@ -184,37 +170,41 @@ document.addEventListener('DOMContentLoaded', function () {
         if (showSecondsCheckbox.checked) {
             time += `:${seconds}`;
         }
-        time += period;
 
-        document.getElementById('date').textContent = date;
-        document.getElementById('time').textContent = time;
+        time += period;
+        clockDisplay.textContent = `${date} ${time}`;
     }
 
     function switchMode() {
-        const pomodoroDisplay = document.getElementById('pomodoro');
-        const clockDisplay = document.getElementById('clock');
         if (modePomodoroRadio.checked) {
-            document.getElementById('timer').style.display = 'block';
             clockDisplay.style.display = 'none';
+            pomodoroModeButton.style.display = 'block';
+            shortBreakModeButton.style.display = 'block';
+            longBreakModeButton.style.display = 'block';
         } else {
-            document.getElementById('timer').style.display = 'none';
             clockDisplay.style.display = 'block';
+            pomodoroModeButton.style.display = 'none';
+            shortBreakModeButton.style.display = 'none';
+            longBreakModeButton.style.display = 'none';
         }
     }
 
     function updateStyles(backgroundColor) {
-        const activeButton = document.querySelector('.buttons button.active');
-        const timer = document.getElementById('timer');
-        const time = document.getElementById('time');
+        const textColor = getTextColor(backgroundColor);
+        document.body.style.color = textColor;
+    }
 
-        if (backgroundColor === '#FFFFFF') {
-            activeButton.classList.add('white-bg');
-            timer.classList.add('white-bg');
-            time.classList.add('white-bg');
-        } else {
-            document.querySelectorAll('.buttons button').forEach(button => button.classList.remove('white-bg'));
-            timer.classList.remove('white-bg');
-            time.classList.remove('white-bg');
-        }
+    function getTextColor(bgColor) {
+        const rgb = hexToRgb(bgColor);
+        const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
+        return brightness > 125 ? '#000' : '#fff';
+    }
+
+    function hexToRgb(hex) {
+        const bigint = parseInt(hex.slice(1), 16);
+        const r = (bigint >> 16) & 255;
+        const g = (bigint >> 8) & 255;
+        const b = bigint & 255;
+        return { r, g, b };
     }
 });

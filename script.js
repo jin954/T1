@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const openSettingsButton = document.getElementById('open-settings');
     const settingsDiv = document.getElementById('settings');
     const dateDisplay = document.getElementById('date');
-    const timeDisplay = document.getElementById('time');
+    const timeDisplay = document.getElementById('clock-time');
+    const amPmDisplay = document.getElementById('am-pm');
 
     // 初期設定の読み込み
     loadSettings();
@@ -15,25 +16,26 @@ document.addEventListener('DOMContentLoaded', function () {
     setClockButton.addEventListener('click', setClockSettings);
 
     function toggleSettings() {
-        if (settingsDiv.style.display === 'none' || settingsDiv.style.display === '') {
+        const isSettingsVisible = settingsDiv.style.display === 'block';
+        settingsDiv.style.display = isSettingsVisible ? 'none' : 'block';
+
+        if (!isSettingsVisible) {
             const buttonRect = openSettingsButton.getBoundingClientRect();
             settingsDiv.style.top = `${buttonRect.bottom + window.scrollY}px`;
             settingsDiv.style.left = `${buttonRect.left + window.scrollX}px`;
-            settingsDiv.style.display = 'block';
-        } else {
-            settingsDiv.style.display = 'none';
         }
     }
 
     function setClockSettings() {
         saveSettings();
         loadSettings();
-        toggleSettings();
+        settingsDiv.style.display = 'none';
     }
 
     function loadSettings() {
         const backgroundColor = localStorage.getItem('backgroundColor') || '#6633FF';
         document.body.style.backgroundColor = backgroundColor;
+        backgroundColorSelect.value = backgroundColor;
         updateStyles(backgroundColor);
         updateClock();
         setInterval(updateClock, 1000);
@@ -65,14 +67,14 @@ document.addEventListener('DOMContentLoaded', function () {
             time += `:${seconds}`;
         }
 
-        timeDisplay.innerHTML = `<span class="am-pm">${period}</span>${time}`;
+        amPmDisplay.textContent = period;
+        amPmDisplay.style.display = period ? 'block' : 'none';
+        timeDisplay.textContent = time;
         dateDisplay.textContent = date;
 
-        const amPmDisplay = document.querySelector('.am-pm');
-        const amPmHeight = timeDisplay.clientHeight / 2;
-        amPmDisplay.style.height = `${amPmHeight}px`;
-        amPmDisplay.style.lineHeight = `${amPmHeight}px`;
-        amPmDisplay.style.top = period === 'AM' ? `0` : `${amPmHeight}px`;
+        const timeHeight = timeDisplay.clientHeight;
+        amPmDisplay.style.height = `${timeHeight}px`;
+        amPmDisplay.style.lineHeight = `${timeHeight / 2}px`;
     }
 
     function formatDate(date) {
@@ -85,12 +87,16 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateStyles(backgroundColor) {
         if (backgroundColor === '#FFFFFF') {
             document.body.style.color = 'black';
-            dateDisplay.classList.add('white-bg');
-            timeDisplay.classList.add('white-bg');
+            dateDisplay.style.color = 'black';
+            timeDisplay.style.color = 'black';
+            dateDisplay.style.textShadow = 'none';
+            timeDisplay.style.textShadow = 'none';
         } else {
             document.body.style.color = 'white';
-            dateDisplay.classList.remove('white-bg');
-            timeDisplay.classList.remove('white-bg');
+            dateDisplay.style.color = 'white';
+            timeDisplay.style.color = 'white';
+            dateDisplay.style.textShadow = '1px 1px 2px black';
+            timeDisplay.style.textShadow = '1px 1px 2px black';
         }
     }
 });

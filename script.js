@@ -3,10 +3,21 @@ document.addEventListener('DOMContentLoaded', function () {
     const showSecondsCheckbox = document.getElementById('show-seconds');
     const backgroundColorSelect = document.getElementById('background-color');
     const setClockButton = document.getElementById('set-clock');
+    const openSettingsButton = document.getElementById('open-settings');
+    const settingsDiv = document.getElementById('settings');
     const dateDisplay = document.getElementById('date');
     const timeDisplay = document.getElementById('time');
 
+    openSettingsButton.addEventListener('click', toggleSettings);
     setClockButton.addEventListener('click', setClockSettings);
+
+    function toggleSettings() {
+        if (settingsDiv.style.display === 'none' || settingsDiv.style.display === '') {
+            settingsDiv.style.display = 'block';
+        } else {
+            settingsDiv.style.display = 'none';
+        }
+    }
 
     function setClockSettings() {
         const backgroundColor = backgroundColorSelect.value;

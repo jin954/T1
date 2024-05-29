@@ -16,6 +16,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function toggleSettings() {
         if (settingsDiv.style.display === 'none' || settingsDiv.style.display === '') {
+            const clockRect = document.getElementById('clock').getBoundingClientRect();
+            settingsDiv.style.top = `${clockRect.top}px`;
+            settingsDiv.style.left = `${clockRect.left}px`;
             settingsDiv.style.display = 'block';
         } else {
             settingsDiv.style.display = 'none';
@@ -87,31 +90,23 @@ document.addEventListener('DOMContentLoaded', function () {
         return result ? {
             r: parseInt(result[1], 16),
             g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16)
+            b: parseInt(result[2], 16)
         } : null;
     }
 
-    function saveSettings() {
-        const settings = {
-            timeFormat: timeFormatSelect.value,
-            showSeconds: showSecondsCheckbox.checked,
-            backgroundColor: backgroundColorSelect.value
-        };
-        localStorage.setItem('clockSettings', JSON.stringify(settings));
-    }
-
     function loadSettings() {
-        const savedSettings = localStorage.getItem('clockSettings');
-        if (savedSettings) {
-            const settings = JSON.parse(savedSettings);
-            timeFormatSelect.value = settings.timeFormat;
-            showSecondsCheckbox.checked = settings.showSeconds;
-            backgroundColorSelect.value = settings.backgroundColor;
-            document.body.style.backgroundColor = settings.backgroundColor;
-            updateStyles(settings.backgroundColor);
-        }
+        const backgroundColor = localStorage.getItem('backgroundColor') || '#6633FF';
+        document.body.style.backgroundColor = backgroundColor;
+        updateStyles(backgroundColor);
     }
 
+    function saveSettings() {
+        const backgroundColor = backgroundColorSelect.value;
+        localStorage.setItem('backgroundColor', backgroundColor);
+    }
+
+    // 初期化
     updateClock();
     setInterval(updateClock, 1000);
 });
+

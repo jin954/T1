@@ -16,9 +16,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function toggleSettings() {
         if (settingsDiv.style.display === 'none' || settingsDiv.style.display === '') {
-            const clockRect = document.getElementById('clock').getBoundingClientRect();
-            settingsDiv.style.top = `${clockRect.top}px`;
-            settingsDiv.style.left = `${clockRect.left}px`;
+            const buttonRect = openSettingsButton.getBoundingClientRect();
+            settingsDiv.style.top = `${buttonRect.bottom}px`;
+            settingsDiv.style.left = `${buttonRect.left}px`;
             settingsDiv.style.display = 'block';
         } else {
             settingsDiv.style.display = 'none';
@@ -72,6 +72,12 @@ document.addEventListener('DOMContentLoaded', function () {
         amPmDisplay.textContent = period;
         amPmDisplay.className = 'am-pm';
         timeDisplay.appendChild(amPmDisplay);
+
+        // AM/PM の位置を調整
+        const amPmHeight = timeDisplay.clientHeight / 2;
+        amPmDisplay.style.position = 'absolute';
+        amPmDisplay.style.left = '0';
+        amPmDisplay.style.top = period === ' AM' ? `0` : `${amPmHeight}px`;
     }
 
     function formatDate(date) {

@@ -3,15 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clock</title>
+    <title>Pomodoro Timer & Clock</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="clock">
-        <div id="date"></div>
-        <div id="time"></div>
-        <button id="open-settings" class="icon-button">⚙️</button>
-        <div id="settings">
+    <div id="pomodoro">
+        <div class="buttons">
+            <button id="pomodoro-mode" class="active">Pomodoro</button>
+            <button id="short-break-mode">Short Break</button>
+            <button id="long-break-mode">Long Break</button>
+        </div>
+        <div id="timer">25:00</div>
+        <div id="clock" style="display: none;">
+            <div id="date"></div>
+            <div id="time-container">
+                <div id="am-pm"></div>
+                <div id="time"></div>
+            </div>
+        </div>
+        <div class="pomodoro-controls">
+            <button id="start-pomodoro" class="start-button">Start</button>
+            <button id="reset-pomodoro" class="icon-button">🔄</button>
+            <button id="open-settings" class="icon-button">⚙️</button>
+        </div>
+        <div id="settings" style="display: none;">
+            <label>Pomodoro: <input type="number" id="pomodoro-minutes" value="25" min="1" max="60"> 分</label>
+            <label>Short Break: <input type="number" id="short-break-minutes" value="5" min="1" max="30"> 分</label>
+            <label>Long Break: <input type="number" id="long-break-minutes" value="15" min="1" max="60"> 分</label>
+            <label>Background Color:
+                <select id="background-color">
+                    <option value="#6633FF">Purple</option>
+                    <option value="#FFFFFF">White</option>
+                    <option value="#000000">Black</option>
+                </select>
+            </label>
             <label>Time Format:
                 <select id="time-format">
                     <option value="24">24-hour</option>
@@ -21,16 +46,16 @@
             <label>Show Seconds:
                 <input type="checkbox" id="show-seconds">
             </label>
-            <label>Background Color:
-                <select id="background-color">
-                    <option value="#6633FF">Purple</option>
-                    <option value="#FFFFFF">White</option>
-                    <option value="#000000">Black</option>
-                </select>
-            </label>
-            <button id="set-clock">Set Clock</button>
+            <button id="set-pomodoro">設定</button>
+        </div>
+        <div class="mode-switch">
+            <input type="radio" id="mode-pomodoro" name="mode" checked>
+            <label for="mode-pomodoro">Pomodoro</label>
+            <input type="radio" id="mode-clock" name="mode">
+            <label for="mode-clock">Clock</label>
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>

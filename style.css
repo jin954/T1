@@ -15,13 +15,13 @@ body {
     transform: scale(0.8);
 }
 
-#pomodoro .buttons {
+.buttons {
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
 }
 
-#pomodoro .buttons button {
+.buttons button {
     margin: 0 5px;
     padding: 5px 15px;
     border: none;
@@ -33,13 +33,13 @@ body {
     box-shadow: 0 0 2px 1px black;
 }
 
-#pomodoro .buttons button.active {
+.buttons button.active {
     background: white;
     color: #1a1a2e;
     box-shadow: 0 0 2px 1px black;
 }
 
-#pomodoro .buttons button.active.white-bg {
+.buttons button.active.white-bg {
     background: gray;
     color: white;
 }

@@ -21,10 +21,11 @@ document.addEventListener('DOMContentLoaded', function () {
             settingsDiv.style.left = `${clockRect.left}px`;
             settingsDiv.style.display = 'block';
         } else {
-            settingsDiv.style.display = 'none
-}
+            settingsDiv.style.display = 'none';
+        }
+    }
 
-        function setClockSettings() {
+    function setClockSettings() {
         saveSettings();
         loadSettings();
         toggleSettings();
@@ -67,12 +68,10 @@ document.addEventListener('DOMContentLoaded', function () {
         timeDisplay.textContent = time;
         dateDisplay.textContent = date;
 
-        if (timeFormatSelect.value === '12') {
-            const amPmDisplay = document.createElement('div');
-            amPmDisplay.textContent = period;
-            amPmDisplay.className = 'am-pm';
-            timeDisplay.appendChild(amPmDisplay);
-        }
+        const amPmDisplay = document.createElement('div');
+        amPmDisplay.textContent = period;
+        amPmDisplay.className = 'am-pm';
+        timeDisplay.appendChild(amPmDisplay);
     }
 
     function formatDate(date) {

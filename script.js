@@ -16,9 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function updateClock() {
         const now = new Date();
-        const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
-        const dayName = dayNames[now.getDay()];
-        const date = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日（${dayName}）`;
+        const date = now.toLocaleDateString('ja-JP', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         let hours = now.getHours();
         let minutes = now.getMinutes();
         let seconds = now.getSeconds();

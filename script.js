@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function updateClock() {
         const now = new Date();
-        const date = now.toLocaleDateString('ja-JP', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        const date = formatDate(now);
         let hours = now.getHours();
         let minutes = now.getMinutes();
         let seconds = now.getSeconds();
@@ -49,6 +49,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
         dateDisplay.textContent = date;
         timeDisplay.textContent = time;
+    }
+
+    function formatDate(date) {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const weekday = ['日', '月', '火', '水', '木', '金', '土'][date.getDay()];
+        return `${year}-${month}-${day}(${weekday})`;
     }
 
     function updateStyles(backgroundColor) {

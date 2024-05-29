@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const dateDisplay = document.getElementById('date');
     const timeDisplay = document.getElementById('time');
 
+    // 初期設定の読み込み
+    loadSettings();
+
     openSettingsButton.addEventListener('click', toggleSettings);
     setClockButton.addEventListener('click', setClockSettings);
 
@@ -23,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const backgroundColor = backgroundColorSelect.value;
         document.body.style.backgroundColor = backgroundColor;
         updateStyles(backgroundColor);
+        saveSettings();
     }
 
     function updateClock() {
@@ -85,6 +89,27 @@ document.addEventListener('DOMContentLoaded', function () {
             g: parseInt(result[2], 16),
             b: parseInt(result[3], 16)
         } : null;
+    }
+
+    function saveSettings() {
+        const settings = {
+            timeFormat: timeFormatSelect.value,
+            showSeconds: showSecondsCheckbox.checked,
+            backgroundColor: backgroundColorSelect.value
+        };
+        localStorage.setItem('clockSettings', JSON.stringify(settings));
+    }
+
+    function loadSettings() {
+        const savedSettings = localStorage.getItem('clockSettings');
+        if (savedSettings) {
+            const settings = JSON.parse(savedSettings);
+            timeFormatSelect.value = settings.timeFormat;
+            showSecondsCheckbox.checked = settings.showSeconds;
+            backgroundColorSelect.value = settings.backgroundColor;
+            document.body.style.backgroundColor = settings.backgroundColor;
+            updateStyles(settings.backgroundColor);
+        }
     }
 
     updateClock();

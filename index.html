@@ -3,25 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pomodoro Timer with Clock</title>
+    <title>Pomodoro Timer & Clock</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="pomodoro">
-        <div class="mode-switch">
-            <input type="radio" id="clock-mode" name="mode" checked>
-            <label for="clock-mode">時計</label>
-            <input type="radio" id="pomodoro-mode" name="mode">
-            <label for="pomodoro-mode">ポモドーロ</label>
+        <div class="buttons">
+            <button id="pomodoro-mode" class="active">Pomodoro</button>
+            <button id="short-break-mode">Short Break</button>
+            <button id="long-break-mode">Long Break</button>
         </div>
-        <div id="clock">
+        <div id="timer">25:00</div>
+        <div id="clock" style="display: none;">
             <div id="date"></div>
             <div id="time"></div>
         </div>
-        <div id="timer" style="display: none;">25:00</div>
         <div class="pomodoro-controls">
-            <button id="start-pomodoro" class="start-button" style="display: none;">Start</button>
-            <button id="reset-pomodoro" class="icon-button" style="display: none;">🔄</button>
+            <button id="start-pomodoro" class="start-button">Start</button>
+            <button id="reset-pomodoro" class="icon-button">🔄</button>
             <button id="open-settings" class="icon-button">⚙️</button>
         </div>
         <div id="settings" style="display: none;">
@@ -37,14 +36,20 @@
             </label>
             <label>Time Format:
                 <select id="time-format">
-                    <option value="24">24時間表記</option>
-                    <option value="12">AM/PM表記</option>
+                    <option value="24">24-hour</option>
+                    <option value="12">12-hour (AM/PM)</option>
                 </select>
             </label>
             <label>Show Seconds:
-                <input type="checkbox" id="show-seconds" checked>
+                <input type="checkbox" id="show-seconds">
             </label>
             <button id="set-pomodoro">設定</button>
+        </div>
+        <div class="mode-switch">
+            <input type="radio" id="mode-pomodoro" name="mode" checked>
+            <label for="mode-pomodoro">Pomodoro</label>
+            <input type="radio" id="mode-clock" name="mode">
+            <label for="mode-clock">Clock</label>
         </div>
     </div>
 

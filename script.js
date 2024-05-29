@@ -77,7 +77,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function formatDate(date) {
         const options = { weekday: 'short', year: 'numeric', month: '2-digit', day: '2-digit' };
-        return date.toLocaleDateString('ja-JP', options);
+        const formattedDate = date.toLocaleDateString('ja-JP', options);
+        const [year, month, day, weekday] = formattedDate.split(/[-/年月日]/);
+        return `${year}-${month}-${day}(${weekday})`;
     }
 
     function updateStyles(backgroundColor) {

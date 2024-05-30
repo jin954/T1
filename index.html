@@ -1,32 +1,29 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>時計</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div id="clock-container">
-        <div id="date"></div>
+<div id="clock">
+    <div id="date"></div>
+    <div id="time-wrapper">
         <div id="time">
-            <span id="am-pm"></span>
-            <span id="clock-time"></span>
+            <span id="hours"></span>:<span id="minutes"></span>
         </div>
-        <button id="open-settings">⚙️</button>
+        <div id="am-pm"></div>
     </div>
-    <div id="settings">
-        <label for="time-format">時間形式:</label>
-        <select id="time-format">
-            <option value="24">24時間</option>
-            <option value="12">12時間</option>
-        </select>
-        <label for="show-seconds">秒を表示:</label>
-        <input type="checkbox" id="show-seconds">
-        <label for="background-color">背景色:</label>
-        <input type="color" id="background-color" value="#6633FF">
-        <button id="set-clock">設定を保存</button>
+    <button id="open-settings" class="icon-button">⚙️</button>
+    <div id="settings" style="display: none;">
+        <label>Time Format:
+            <select id="time-format">
+                <option value="24">24-hour</option>
+                <option value="12">12-hour (AM/PM)</option>
+            </select>
+        </label>
+        <label>Show Seconds:
+            <input type="checkbox" id="show-seconds">
+        </label>
+        <label>Background Color:
+            <select id="background-color">
+                <option value="#6633FF">Purple</option>
+                <option value="#FFFFFF">White</option>
+                <option value="#000000">Black</option>
+            </select>
+        </label>
+        <button id="set-clock">Set Clock</button>
     </div>
-    <script src="script.js"></script>
-</body>
-</html>
+</div>

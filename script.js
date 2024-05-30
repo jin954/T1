@@ -6,44 +6,29 @@ document.addEventListener('DOMContentLoaded', function () {
     const openSettingsButton = document.getElementById('open-settings');
     const settingsDiv = document.getElementById('settings');
     const dateDisplay = document.getElementById('date');
-    const timeDisplay = document.getElementById('clock-time');
+    const hoursDisplay = document.getElementById('hours');
+    const minutesDisplay = document.getElementById('minutes');
     const amPmDisplay = document.getElementById('am-pm');
 
-    // 初期設定の読み込み
+    // Initial settings load
     loadSettings();
 
     openSettingsButton.addEventListener('click', toggleSettings);
     setClockButton.addEventListener('click', setClockSettings);
 
     function toggleSettings() {
-        const isSettingsVisible = settingsDiv.style.display === 'block';
-        settingsDiv.style.display = isSettingsVisible ? 'none' : 'block';
-
-        if (!isSettingsVisible) {
-            const buttonRect = openSettingsButton.getBoundingClientRect();
-            settingsDiv.style.top = `${buttonRect.bottom + window.scrollY}px`;
-            settingsDiv.style.left = `${buttonRect.left + window.scrollX}px`;
+        if (settingsDiv.style.display === 'none' || settingsDiv.style.display === '') {
+            settingsDiv.style.display = 'block';
+        } else {
+            settingsDiv.style.display = 'none';
         }
     }
 
     function setClockSettings() {
-        saveSettings();
-        loadSettings();
-        settingsDiv.style.display = 'none';
-    }
-
-    function loadSettings() {
-        const backgroundColor = localStorage.getItem('backgroundColor') || '#6633FF';
-        document.body.style.backgroundColor = backgroundColor;
-        backgroundColorSelect.value = backgroundColor;
-        updateStyles(backgroundColor);
-        updateClock();
-        setInterval(updateClock, 1000);
-    }
-
-    function saveSettings() {
         const backgroundColor = backgroundColorSelect.value;
-        localStorage.setItem('backgroundColor', backgroundColor);
+        document.body.style.backgroundColor = backgroundColor;
+        updateStyles(backgroundColor);
+        saveSettings();
     }
 
     function updateClock() {
@@ -62,41 +47,78 @@ document.addEventListener('DOMContentLoaded', function () {
         minutes = minutes.toString().padStart(2, '0');
         seconds = seconds.toString().padStart(2, '0');
 
-        let time = `${hours}:${minutes}`;
+        hoursDisplay.textContent = hours;
+        minutesDisplay.textContent = minutes;
+        amPmDisplay.textContent = period;
+
         if (showSecondsCheckbox.checked) {
-            time += `:${seconds}`;
+            minutesDisplay.textContent += `:${seconds}`;
         }
 
-        amPmDisplay.textContent = period;
-        amPmDisplay.style.display = period ? 'block' : 'none';
-        timeDisplay.textContent = time;
         dateDisplay.textContent = date;
-
-        const timeHeight = timeDisplay.clientHeight;
-        amPmDisplay.style.height = `${timeHeight}px`;
-        amPmDisplay.style.lineHeight = `${timeHeight / 2}px`;
     }
 
     function formatDate(date) {
-        const options = { weekday: 'short', year: 'numeric', month: '2-digit', day: '2-digit' };
-        const formattedDate = date.toLocaleDateString('ja-JP', options);
-        const [year, month, day, weekday] = formattedDate.split(/[-/年月日]/);
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const weekday = ['日', '月', '火', '水', '木', '金', '土'][date.getDay()];
         return `${year}-${month}-${day}(${weekday})`;
     }
 
     function updateStyles(backgroundColor) {
-        if (backgroundColor === '#FFFFFF') {
-            document.body.style.color = 'black';
-            dateDisplay.style.color = 'black';
-            timeDisplay.style.color = 'black';
-            dateDisplay.style.textShadow = 'none';
-            timeDisplay.style.textShadow = 'none';
+        const isDark = isDarkColor(backgroundColor);
+
+        if (isDark) {
+            dateDisplay.classList.remove('white-bg');
+            hoursDisplay.classList.remove('white-bg');
+            minutesDisplay.classList.remove('white-bg');
+            amPmDisplay.classList.remove('white-bg');
         } else {
-            document.body.style.color = 'white';
-            dateDisplay.style.color = 'white';
-            timeDisplay.style.color = 'white';
-            dateDisplay.style.textShadow = '1px 1px 2px black';
-            timeDisplay.style.textShadow = '1px 1px 2px black';
+            dateDisplay.classList.add('white-bg');
+            hoursDisplay.classList.add('white-bg');
+            minutesDisplay.classList.add('white-bg');
+            amPmDisplay.classList.add('white-bg');
         }
     }
+
+    function isDarkColor(color) {
+        const rgb = hexToRgb(color);
+        if (!rgb) return false;
+        const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
+        return brightness < 128;
+    }
+
+    function hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
+    }
+
+    function saveSettings() {
+        const settings = {
+            timeFormat: timeFormatSelect.value,
+            showSeconds: showSecondsCheckbox.checked,
+            backgroundColor: backgroundColorSelect.value
+        };
+        localStorage.setItem('clockSettings', JSON.stringify(settings));
+    }
+
+    function loadSettings() {
+        const savedSettings = localStorage.getItem('clockSettings');
+        if (savedSettings) {
+            const settings = JSON.parse(savedSettings);
+            timeFormatSelect.value = settings.timeFormat;
+            showSecondsCheckbox.checked = settings.showSeconds;
+            backgroundColorSelect.value = settings.backgroundColor;
+            document.body.style.backgroundColor = settings.backgroundColor;
+            updateStyles(settings.backgroundColor);
+        }
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
 });
